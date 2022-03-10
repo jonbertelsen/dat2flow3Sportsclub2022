@@ -113,9 +113,9 @@ public class MemberMapper {
                     if (rowsAffected == 1){
                         result = true;
                     }
-                    ResultSet idResultset = ps.getGeneratedKeys();
-                    if (idResultset.next()){
-                        newId = idResultset.getInt(1);
+                    newId = getGeneratedKey(ps);
+                    if (newId != 0)
+                    {
                         member.setMemberId(newId);
                     } else {
                         member = null;
@@ -129,6 +129,17 @@ public class MemberMapper {
                 throwables.printStackTrace();
             }
                 return member;
+        }
+
+        private int getGeneratedKey(PreparedStatement ps) throws SQLException
+        {
+            int newId = 0;
+            ResultSet idResultset = ps.getGeneratedKeys();
+            if (idResultset.next())
+            {
+                newId = idResultset.getInt("GENERATED_KEY");
+            }
+            return newId;
         }
 
         public boolean updateMember(Member member) {
